@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 // @mui
 import {
   Card,
@@ -22,6 +22,7 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+import axios from 'axios';
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -29,7 +30,6 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
@@ -73,6 +73,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
+  const [UserData, setUserData] = useState([]);
+
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -87,6 +89,13 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  useEffect(() => {
+    const k = async () => {
+      const users = await axios.get('http://localhost:3002/data');
+      setUserData(users.data.Users);
+    };
+    k();
+  });
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -103,7 +112,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = UserData.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -139,11 +148,19 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - UserData.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(UserData, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
+
+  let noUser = false;
+
+  if (UserData.length === 0) {
+    noUser = true;
+  } else {
+    noUser = false;
+  }
 
   return (
     <>
@@ -171,14 +188,14 @@ export default function UserPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={UserData.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody className="w-full">
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, status, gender, Plan, ph_Number } = row;
+                    const { id, name, status, gender, profile_pic, Plan, ph_Number } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
@@ -189,7 +206,7 @@ export default function UserPage() {
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src="" />
+                            <Avatar alt={name} src={profile_pic} />
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>
@@ -225,7 +242,7 @@ export default function UserPage() {
                   )}
                 </TableBody>
 
-                {isNotFound && (
+                {(noUser || isNotFound) && (
                   <TableBody>
                     <TableRow>
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -255,7 +272,7 @@ export default function UserPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={UserData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -287,11 +304,24 @@ export default function UserPage() {
           Edit
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
+        {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+          const { id } = row;
+
+          return (
+            <MenuItem key={id} onClick={() => handleDel(id)} sx={{ color: 'error.main' }}>
+              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+              {id}
+            </MenuItem>
+          );
+        })}
       </Popover>
     </>
   );
 }
+
+const handleDel = (inid) => {
+  const k = async () => {
+    await axios.post('http://localhost:3002/del', { id: inid });
+  };
+  k();
+};

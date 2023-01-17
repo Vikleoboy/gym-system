@@ -42,6 +42,17 @@ app.post("/dimage", (req, res) => {
   );
 });
 
+app.post("/del", async (req, res) => {
+  console.log("indel");
+  const i = req.body.id;
+
+  console.log(i);
+  const user = new User("../Database/User.json");
+  await user.build();
+  await user.deleteUser(i);
+  await user.end();
+});
+
 app.post("/adduser", async (req, res) => {
   console.log(req.body);
   console.log("  u are at user ");
@@ -51,14 +62,14 @@ app.post("/adduser", async (req, res) => {
   let path = "images/";
   let name = data.name + data.ph_Number;
 
-  base64.img(
-    data.profile_pic,
-    `${databasedir + path + name} `,
-    name,
-    function (error, filepath) {
-      console.log(error);
-    }
-  );
+  // base64.img(
+  //   data.profile_pic,
+  //   `${databasedir + path + name} `,
+  //   name,
+  //   function (error, filepath) {
+  //     console.log(error);
+  //   }
+  // );
 
   const user = new User("../Database/User.json");
   await user.build();
