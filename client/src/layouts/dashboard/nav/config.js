@@ -42,11 +42,16 @@ const navConfig = [
     path: '/dashboard/addUser',
     icon: icon('ic_disabled'),
   },
+  // {
+  //   title: 'DataBase',
+  //   path: '/dashboard/Database',
+  //   icon: icon('ic_disabled'),
+  // },
   {
-    title: 'DataBase',
+    title:'Product',
     path: '/dashboard/Database',
     icon: icon('ic_disabled'),
-  },
+  }
 ];
 
 export default navConfig;
