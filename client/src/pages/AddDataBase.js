@@ -9,7 +9,7 @@ export const AddDataBase = (props) => {
   const WebcamComponent = () => <Webcam />;
 
   const videoConstraints = {
-    width: 720,
+    width: 1280,
     height: 1280,
     facingMode: 'user',
   };

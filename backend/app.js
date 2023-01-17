@@ -18,6 +18,15 @@ app.use(express.json());
 
 app.get("/folder", (req, res) => {});
 
+app.get("/data", async (req, res) => {
+  const user = new User("../Database/User.json");
+  await user.build();
+
+  res.json(await user.data);
+
+  await user.end();
+});
+
 app.post("/dimage", (req, res) => {
   let databasedir = "../Database/";
   let path = "images/";

@@ -1,4 +1,3 @@
-import { ok } from "assert";
 import fs from "fs";
 import uniqid from "uniqid";
 

@@ -5,6 +5,7 @@
   "version": "1.6.0",
   "proxy": "http://localhost:3002/",
   "private": false,
+    
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

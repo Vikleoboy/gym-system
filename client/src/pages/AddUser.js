@@ -125,7 +125,7 @@ export const AddUser = () => {
               {/* Profile */}
               <div className=" border-b-2 border-solid  drop-shadow-xl   flex flex-col justify-center items-center space-y-6">
                 <Typography variant="h4"> Personal Information</Typography>
-                <Avatar src={profile} sx={{ width: 106, height: 106 }} className=" rotate-90  " alt="choose image" />
+                <Avatar src={profile} sx={{ width: 106, height: 106 }} className="   " alt="choose image" />
                 <Button onClick={changePopup} variant="outlined" className="">
                   Choose Image
                 </Button>

@@ -21,10 +21,13 @@
     "requireConfigFile": false,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
-      "impliedStrict": true
+      "impliedStrict": true,
+      "topLevelAwait" : true
     }
   },
+  
   "rules": {
+    "camelcase": "off",
     "no-new": 0,
     "no-alert": 0,
     "no-shadow": 0,
