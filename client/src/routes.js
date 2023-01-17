@@ -29,7 +29,8 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'addUser', element: <AddUser /> },
         { path: 'Database', element: <AddDataBase /> },
-        {path: 'Product', element: <Product />}
+        {path: 'Product', element: <Product />},
+       
       ],
     },
     {

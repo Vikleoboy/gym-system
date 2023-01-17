@@ -49,7 +49,7 @@ const navConfig = [
   // },
   {
     title:'Product',
-    path: '/dashboard/Database',
+    path: '/dashboard/product',
     icon: icon('ic_disabled'),
   }
 ];
