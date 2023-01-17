@@ -1,7 +1,6 @@
-import React from 'react'
+import React from 'react';
+import './k.css';
 
 export const Product = () => {
-  return (
-    <div>product</div>
-  )
-}
+  return <div className=" m">product</div>;
+};

@@ -60,8 +60,6 @@ app.post("/adduser", async (req, res) => {
     }
   );
 
-  data.profile_pic = `${databasedir + path + name} `;
-
   const user = new User("../Database/User.json");
   await user.build();
   await user.addUser(data);

@@ -97,13 +97,13 @@ class User {
   }
 }
 
-// let k = new User("../../Database/User.json");
-// await k.build();
+let k = new User("../../Database/User.json");
+await k.build();
 
-// await k.deleteAllUsers();
+await k.deleteAllUsers();
 
-// await k.end();
+await k.end();
 
-// console.log(k.path, k.data);
+console.log(k.path, k.data);
 
 export default User;
