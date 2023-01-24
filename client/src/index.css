@@ -1,3 +1,14 @@
+::-webkit-scrollbar-thumb {
+    background-color: #d8eff6;
+    border-radius: 20px;
+    
+  }
+.scrollhost::-webkit-scrollbar {
+    background-color: #d8eff6;
+    border-radius: 20px;
+    color: aqua
+  }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

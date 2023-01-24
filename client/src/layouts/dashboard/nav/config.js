@@ -48,10 +48,15 @@ const navConfig = [
   //   icon: icon('ic_disabled'),
   // },
   {
-    title:'Product',
+    title: 'Product',
     path: '/dashboard/Database',
     icon: icon('ic_disabled'),
-  }
+  },
+  {
+    title: 'Editor',
+    path: '/dashboard/editor',
+    icon: icon('ic_disabled'),
+  },
 ];
 
 export default navConfig;

@@ -13,7 +13,8 @@ import DashboardAppPage from './pages/DashboardAppPage';
 import { AddUser } from './pages/AddUser';
 import { AddDataBase } from './pages/AddDataBase';
 
-import{Product} from './pages/product';
+import { Product } from './pages/product';
+import { Editor } from './pages/Editor';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -29,7 +30,8 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'addUser', element: <AddUser /> },
         { path: 'Database', element: <AddDataBase /> },
-        {path: 'Product', element: <Product />}
+        { path: 'Product', element: <Product /> },
+        { path: 'editor', element: <Editor /> },
       ],
     },
     {

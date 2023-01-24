@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import base64 from "base64-img";
 import User from "./Scripts/User.js";
+import Plans from "./Scripts/Plans.js";
+import Product from "./Scripts/Product.js";
 
 const app = express();
 const port = 3002;
@@ -27,6 +29,24 @@ app.get("/data", async (req, res) => {
   await user.end();
 });
 
+app.get("/plandata", async (req, res) => {
+  const plan = new Plans("../Database/Plans.json");
+  await plan.build();
+
+  res.json(await plan.data);
+
+  await plan.end();
+});
+
+app.get("/prodata", async (req, res) => {
+  const pro = new Product("../Database/Product.json");
+  await pro.build();
+
+  res.json(await pro.data);
+
+  await pro.end();
+});
+
 app.post("/dimage", (req, res) => {
   let databasedir = "../Database/";
   let path = "images/";
@@ -46,17 +66,34 @@ app.post("/del", async (req, res) => {
   console.log("indel");
   const i = req.body.id;
 
-  console.log(i);
   const user = new User("../Database/User.json");
   await user.build();
   await user.deleteUser(i);
   await user.end();
 });
 
-app.post("/adduser", async (req, res) => {
-  console.log(req.body);
-  console.log("  u are at user ");
+app.post("/plandel", async (req, res) => {
+  console.log("indel");
+  const i = req.body.id;
 
+  const user = new Plans("../Database/Plans.json");
+  await user.build();
+  await user.deletePlan(i);
+  await user.end();
+});
+
+app.post("/prodel", async (req, res) => {
+  console.log("indel");
+  const i = req.body.id;
+
+  console.log(i);
+  const user = new Product("../Database/Product.json");
+  await user.build();
+  await user.deletePro(i);
+  await user.end();
+});
+
+app.post("/adduser", async (req, res) => {
   let data = req.body;
   let databasedir = "../Database/";
   let path = "images/";
@@ -77,6 +114,27 @@ app.post("/adduser", async (req, res) => {
   await user.end();
   res.send("done");
 });
+
+app.post("/addPlan", async (req, res) => {
+  let data = req.body;
+  console.log(data);
+  const user = new Plans("../Database/Plans.json");
+  await user.build();
+  await user.addPlan(data);
+  await user.end();
+  res.send("done");
+});
+
+app.post("/addPro", async (req, res) => {
+  let data = req.body;
+  console.log(data);
+  const pro = new Product("../Database/Product.json");
+  await pro.build();
+  await pro.addPro(data);
+  await pro.end();
+  res.send("done");
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

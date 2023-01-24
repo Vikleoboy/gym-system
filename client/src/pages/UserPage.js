@@ -95,7 +95,7 @@ export default function UserPage() {
       setUserData(users.data.Users);
     };
     k();
-  });
+  }, []);
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };

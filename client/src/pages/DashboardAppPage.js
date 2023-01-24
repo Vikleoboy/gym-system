@@ -73,7 +73,7 @@ export default function DashboardAppPage() {
                   name: 'Team A',
                   type: 'column',
                   fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                  data: [23, 0, 1, 0, 13, 22, 37, 21, 44, 22, 30],
                 },
                 {
                   name: 'Team B',
