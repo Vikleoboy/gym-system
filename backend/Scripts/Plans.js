@@ -22,21 +22,40 @@ class Plans {
   async deletePlan(id) {
     let done = false;
     for (let plan of this.data.Plans) {
-      if (plan.id === id) {
-        console.log("i am in for");
+      if (plan.id == id) {
+        console.log(plan.id == id);
         let index = this.data.Plans.indexOf(plan);
         this.data.Plans.splice(index, 1);
         done = true;
+        console.log(index, "this is ok ", done);
+
+        return done;
       }
     }
     if (!done) {
       // throw "user not found ";
       console.log(id + "this is id ");
+      return done;
     }
+    return "s";
   }
 
   async deleteAllPlans() {
     this.data[this.mainObj[0]] = [];
+  }
+
+  async getPlan(id) {
+    let done = false;
+    for (let plan of this.data.Plans) {
+      if (plan.id === id) {
+        done = true;
+
+        return plan;
+      }
+    }
+    if (!done) {
+      throw "user not found ";
+    }
   }
 
   async addPlan(plandetails) {
@@ -62,23 +81,22 @@ class Plans {
       }
     }
 
-    console.log(plantemp);
-
     this.data[this.mainObj[0]].push(plantemp);
   }
 
   async build() {
     try {
       let d = await fs.readFileSync(this.path, "utf-8");
-      console.log(typeof d);
+
       this.data = JSON.parse(d);
-      console.log(this.data);
+
       for (let i of this.mainObj) {
-        console.log(this.mainObj);
         if (!(i in this.data)) {
           this.data[i] = [];
         }
       }
+      console.log("in the build");
+      return this.data;
     } catch (e) {
       console.log(" error in build ", e);
     }
@@ -87,6 +105,7 @@ class Plans {
   async end() {
     let d = JSON.stringify(this.data);
     let m = await fs.writeFileSync(this.path, d);
+    return m;
   }
 }
 
