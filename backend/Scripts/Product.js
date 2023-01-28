@@ -19,6 +19,20 @@ class Product {
     return user;
   }
 
+  async getPro(id) {
+    let done = false;
+    for (let pro of this.data.Products) {
+      if (pro.id === id) {
+        done = true;
+
+        return pro;
+      }
+    }
+    if (!done) {
+      throw "user not found ";
+    }
+  }
+
   async deletePro(id) {
     let done = false;
     for (let plan of this.data.Products) {
@@ -39,6 +53,24 @@ class Product {
   async deleteAllProducts() {
     this.data[this.mainObj[0]] = [];
   }
+
+  // async changeUser(id, temp) {
+  //   let done = false;
+  //   for (let user of this.data.Products) {
+  //     if (user.id === id) {
+  //       let index = this.data.Products.indexOf(user);
+
+  //       let newUser = { ...user, ...temp };
+
+  //       this.data.Products.splice(index, 1, newUser);
+  //       done = true;
+  //       return newUser;
+  //     }
+  //   }
+  //   if (!done) {
+  //     throw "user not found ";
+  //   }
+  // }
 
   async addPro(plandetails) {
     let plantemp = this.Planstemp();

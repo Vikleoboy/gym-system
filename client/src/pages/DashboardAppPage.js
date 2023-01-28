@@ -1,5 +1,10 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
+import PersonIcon from '@mui/icons-material/Person';
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
@@ -22,11 +27,107 @@ import {
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+  const [mthdata, setmthdata] = useState([44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]);
+  const [userData, setuserData] = useState([]);
+  const [mthOut, setmthOut] = useState([44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]);
+  const [plans, setplans] = useState([]);
+  const [rp, setrp] = useState([]);
+  const [pro, setpro] = useState([]);
+  const allMonths = [
+    '01/01/2003',
+    '02/01/2003',
+    '03/01/2003',
+    '04/01/2003',
+    '05/01/2003',
+    '06/01/2003',
+    '07/01/2003',
+    '08/01/2003',
+    '09/01/2003',
+    '10/01/2003',
+    '11/01/2003',
+  ];
 
+  useEffect(() => {
+    const k = async () => {
+      const d = await axios.get('http://localhost:3002/data');
+      const n = await axios.get('http://localhost:3002/plandata');
+      const m = await axios.get('http://localhost:3002/prodata');
+      setplans(n.data.Plans);
+      setpro(m.data.Products);
+      setuserData(d.data.Users);
+    };
+    k();
+  }, []);
+
+  console.log(userData);
+  console.log(mthOut);
+  useEffect(() => {
+    console.log('in1');
+    const monthsdata = [];
+    const monthsOut = [];
+    const ary = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+    ary.map((m) => {
+      console.log('in2');
+      let num = 0;
+      let o = 0;
+
+      userData?.map((user) => {
+        const n = new Date(user.check_in);
+        const k = new Date(user.check_out);
+
+        if (n.getMonth() === m) {
+          console.log('in the month ');
+          num += 1;
+        }
+
+        if (k.getMonth() === m) {
+          console.log('in the month ');
+          o += 1;
+        }
+        return num;
+      });
+
+      monthsdata.push(num);
+      monthsOut.push(o);
+      return num;
+    });
+
+    setmthdata(monthsdata);
+    setmthOut(monthsOut);
+  }, [userData]);
+
+  useEffect(() => {
+    const len = plans?.length;
+    let n = [...Array(len).keys()];
+    const pln = [];
+    // n.splice(n.indexOf(0), 1);
+    n = n.map((i) => i + 1);
+    n = n.map((i) => {
+      return i * 10;
+    });
+    console.log(n);
+    n.map((i) => {
+      let p = 0;
+      userData?.map((user) => {
+        console.log('in user ', user.Plan);
+        if (user.Plan === i) {
+          p += 1;
+        }
+        return user;
+      });
+      pln.push({ label: plans[i / 10 - 1]?.name, value: p });
+      return i;
+    });
+
+    setrp(pln);
+  }, [plans, userData]);
+
+  console.log(rp);
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> Dashboard | GD UI </title>
       </Helmet>
 
       <Container maxWidth="xl">
@@ -35,71 +136,59 @@ export default function DashboardAppPage() {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+          <Grid item xs={12} sm={6} md={4}>
+            <AppWidgetSummary title="Plans" total={plans.length} icon={'ant-design:android-filled'} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+          <Grid item xs={12} sm={6} md={4}>
+            <AppWidgetSummary title="All Users" total={userData.length} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+          <Grid item xs={12} sm={6} md={4}>
+            <AppWidgetSummary
+              title="Item Orders"
+              total={pro.length}
+              color="warning"
+              icon={'ant-design:windows-filled'}
+            />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          {/* <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={40} md={60} lg={9}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
-              chartLabels={[
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ]}
+              chartLabels={allMonths}
               chartData={[
+                // {
+                //   name: 'Team A',
+                //   type: 'column',
+                //   fill: 'solid',
+                //   data: mthdata,
+                // },
                 {
-                  name: 'Team A',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 0, 1, 0, 13, 22, 37, 21, 44, 22, 30],
+                  name: 'Team C',
+                  type: 'area',
+                  fill: 'gradient',
+                  data: mthdata,
                 },
+
                 {
                   name: 'Team B',
                   type: 'area',
                   fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: 'Team C',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                  data: mthOut,
                 },
               ]}
             />
           </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={5} md={2} lg={3}>
             <AppCurrentVisits
-              title="Current Visits"
-              chartData={[
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
-              ]}
+              title="Used Plans"
+              chartData={rp}
               chartColors={[
                 theme.palette.primary.main,
                 theme.palette.info.main,
@@ -109,6 +198,7 @@ export default function DashboardAppPage() {
             />
           </Grid>
 
+          {/* 
           <Grid item xs={12} md={6} lg={8}>
             <AppConversionRates
               title="Conversion Rates"
@@ -126,9 +216,9 @@ export default function DashboardAppPage() {
                 { label: 'United Kingdom', value: 1380 },
               ]}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentSubject
               title="Current Subject"
               chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
@@ -139,9 +229,9 @@ export default function DashboardAppPage() {
               ]}
               chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
               title="News Update"
               list={[...Array(5)].map((_, index) => ({
@@ -152,9 +242,9 @@ export default function DashboardAppPage() {
                 postedAt: faker.date.recent(),
               }))}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
               title="Order Timeline"
               list={[...Array(5)].map((_, index) => ({
@@ -170,9 +260,9 @@ export default function DashboardAppPage() {
                 time: faker.date.past(),
               }))}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppTrafficBySite
               title="Traffic by Site"
               list={[
@@ -211,7 +301,7 @@ export default function DashboardAppPage() {
                 { id: '5', label: 'Sprint Showcase' },
               ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>

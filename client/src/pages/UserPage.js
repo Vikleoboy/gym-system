@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 // @mui
 import {
@@ -21,6 +21,9 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  FormGroup,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import axios from 'axios';
 // components
@@ -29,6 +32,7 @@ import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+
 // mock
 
 // ----------------------------------------------------------------------
@@ -37,8 +41,10 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'number', label: 'Number', alignRight: false },
   { id: 'gender', label: 'Gender', alignRight: false },
+  { id: 'checkout', label: 'CheckOut', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'plan', label: 'Plan', alignRight: false },
+  { id: 'Edit', label: 'Edit', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -75,6 +81,8 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   const [UserData, setUserData] = useState([]);
 
+  const navigate = useNavigate();
+
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -89,13 +97,75 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [change, setchange] = useState(true);
+
+  const [plans, setplans] = useState([]);
+
+  const [checked, setchecked] = useState(false);
+
+  const handleDel = (inid) => {
+    console.log(inid);
+    const k = async () => {
+      await axios.post('http://localhost:3002/del', { id: inid });
+    };
+
+    setchange((e) => {
+      return !e;
+    });
+    k();
+  };
+
   useEffect(() => {
     const k = async () => {
       const users = await axios.get('http://localhost:3002/data');
+      const plan = await axios.get('http://localhost:3002/plandata');
+      setplans(plan.data.Plans);
       setUserData(users.data.Users);
     };
     k();
-  }, []);
+  }, [change]);
+
+  useEffect(() => {
+    UserData?.map((user) => {
+      const k = async () => {
+        const d = new Date(user.check_out);
+        const t = new Date();
+        console.log('in k ');
+        if (d.getMonth() === t.getMonth() && d.getDate() === t.getDate()) {
+          await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: 'Expired' } });
+        } else if (d.getMonth() === t.getMonth()) {
+          if (t.getDate() - d.getDate() <= 5) {
+            await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: '5 days' } });
+          }
+        } else {
+          console.log('in else', user);
+          await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: 'Paid' } });
+        }
+      };
+
+      k();
+
+      return user;
+    });
+  }, [change, UserData]);
+
+  const handleSwitch = () => {
+    setchecked((e) => !e);
+
+    if (!checked) {
+      setUserData((u) => {
+        return u.filter((i) => {
+          if (i.status === '5 days') {
+            return true;
+          }
+          return false;
+        });
+      });
+    } else {
+      setchange((e) => !e);
+    }
+  };
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -151,7 +221,9 @@ export default function UserPage() {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - UserData.length) : 0;
 
   const filteredUsers = applySortFilter(UserData, getComparator(order, orderBy), filterName);
-
+  // filteredUsers = filteredUsers.map((u)=> {
+  //   if(u.status)
+  // })
   const isNotFound = !filteredUsers.length && !!filterName;
 
   let noUser = false;
@@ -161,6 +233,11 @@ export default function UserPage() {
   } else {
     noUser = false;
   }
+
+  const handleEdit = (inid) => {
+    console.log(inid);
+    navigate(`/dashboard/editUser/${inid}`);
+  };
 
   return (
     <>
@@ -173,11 +250,21 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            onClick={() => navigate('/dashboard/addUser')}
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
             New User
           </Button>
         </Stack>
 
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch onChange={handleSwitch} value={checked} defaultChecked={false} />}
+            label="5 days "
+          />
+        </FormGroup>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
@@ -185,6 +272,7 @@ export default function UserPage() {
             <TableContainer className="w-full">
               <Table className="w-full">
                 <UserListHead
+                  className=" w-full"
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -195,9 +283,9 @@ export default function UserPage() {
                 />
                 <TableBody className="w-full">
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, status, gender, profile_pic, Plan, ph_Number } = row;
+                    const { id, name, status, gender, profile_pic, Plan, ph_Number, check_out } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
-
+                    const d = new Date(check_out);
                     return (
                       <TableRow hover key={id} tabIndex={-1} role="checkbox" className="w-full" selected={selectedUser}>
                         <TableCell padding="checkbox">
@@ -216,22 +304,92 @@ export default function UserPage() {
                         <TableCell align="left">{ph_Number}</TableCell>
 
                         <TableCell align="left">{gender}</TableCell>
-                        <TableCell align="left">Paid</TableCell>
-                        <TableCell align="left">{Plan}</TableCell>
+                        <TableCell align="left">{`${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`}</TableCell>
+                        <TableCell align="left">{status}</TableCell>
+                        <TableCell align="left">{plans[Plan / 10 - 1]?.name}</TableCell>
 
-                        {/*
-
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                        <TableCell align="right" className="flex  ">
+                          {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
+                          </IconButton> */}
+                          <MenuItem onClick={() => handleEdit(id)}>
+                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                            Edit
+                          </MenuItem>
+                          <MenuItem key={id} onClick={() => handleDel(id)} sx={{ color: 'error.main' }}>
+                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                            Delete
+                          </MenuItem>
                         </TableCell>
+
+                        <Popover
+                          open={Boolean(open)}
+                          anchorEl={open}
+                          onClose={handleCloseMenu}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                          }}
+                          transformOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                          }}
+                          PaperProps={{
+                            sx: {
+                              p: 1,
+                              width: 140,
+                              '& .MuiMenuItem-root': {
+                                px: 1,
+                                typography: 'body2',
+                                borderRadius: 0.75,
+                              },
+                            },
+                          }}
+                        >
+                          <MenuItem onClick={() => handleEdit(id)}>
+                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                            Edit
+                          </MenuItem>
+
+                          <MenuItem key={id} onClick={() => handleEdit(id)} sx={{ color: 'error.main' }}>
+                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                            {id}
+                          </MenuItem>
+                        </Popover>
+
+                        {/* <Popover
+                          open={Boolean(open)}
+                          anchorEl={open}
+                          onClose={handleCloseMenu}
+                          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                          PaperProps={{
+                            sx: {
+                              p: 1,
+                              width: 140,
+                              '& .MuiMenuItem-root': {
+                                px: 1,
+                                typography: 'body2',
+                                borderRadius: 0.75,
+                              },
+                            },
+                          }}
+                        >
+                          <MenuItem
+                            key={6543516431}
+                            onClick={() => {
+                              handleEdit(id);
+                            }}
+                          >
+                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                            Edit
+                          </MenuItem>
+
+                          <MenuItem key={id} onClick={() => handleEdit(id)} sx={{ color: 'error.main' }}>
+                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                            Delete
+                          </MenuItem>
+                        </Popover> */}
                       </TableRow>
                     );
                   })}
@@ -280,48 +438,6 @@ export default function UserPage() {
           />
         </Card>
       </Container>
-
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-          const { id } = row;
-
-          return (
-            <MenuItem key={id} onClick={() => handleDel(id)} sx={{ color: 'error.main' }}>
-              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-              {id}
-            </MenuItem>
-          );
-        })}
-      </Popover>
     </>
   );
 }
-
-const handleDel = (inid) => {
-  const k = async () => {
-    await axios.post('http://localhost:3002/del', { id: inid });
-  };
-  k();
-};

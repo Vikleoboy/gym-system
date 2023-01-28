@@ -15,6 +15,9 @@ import { AddDataBase } from './pages/AddDataBase';
 
 import { Product } from './pages/product';
 import { Editor } from './pages/Editor';
+import { Edit } from './pages/Edit';
+import { Whatsapp } from './pages/WhatsAppText';
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -32,6 +35,8 @@ export default function Router() {
         { path: 'Database', element: <AddDataBase /> },
         { path: 'Product', element: <Product /> },
         { path: 'editor', element: <Editor /> },
+        { path: 'editUser/:id', element: <Edit /> },
+        { path: 'text', element: <Whatsapp /> },
       ],
     },
     {

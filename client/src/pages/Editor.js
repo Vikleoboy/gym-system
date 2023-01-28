@@ -26,7 +26,7 @@ import {
   TableHead,
 } from '@mui/material';
 import axios from 'axios';
-
+import uniqid from 'uniqid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Edm } from './Comp/Edm';
 
@@ -34,9 +34,24 @@ export const Editor = () => {
   const [data, setdata] = useState(null);
   const [ProductData, setProductData] = useState();
   const [open, setOpen] = React.useState(false);
-  const [delList, setdelList] = useState([]);
+
   const [change, setchange] = useState(false);
   const [proOpen, setproOpen] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      // console.log('axios runing ');
+      const d = await axios.get('http://localhost:3002/plandata');
+      const m = await axios.get('http://localhost:3002/prodata');
+      console.log('axios r');
+      // console.log(d);
+      setdata(d.data.Plans);
+      setProductData(m.data.Products);
+    };
+
+    getData();
+  }, [change]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -45,13 +60,21 @@ export const Editor = () => {
     setproOpen(true);
   };
 
-  const handleDel = (ids) => {
-    console.log(ids);
-    const k = async () => {
-      await axios.post('http://localhost:3002/plandel', { id: ids });
-    };
+  const k = async (ids) => {
+    const ROOT_URL = 'http://localhost:3002';
+    console.log('axios ');
+    const n = await axios.post('http://localhost:3002/plandel', { id: ids });
+    console.log('axios runing ');
+    const d = await axios.get('http://localhost:3002/plandata');
+    // const m = await axios.get('http://localhost:3002/prodata');
+    console.log('after axios ');
+    console.log(d);
+    setdata(d.data.Plans);
+  };
+  const handleDel = (idn) => {
+    console.log(idn);
 
-    k();
+    k(idn);
     setchange((e) => {
       return !e;
     });
@@ -61,26 +84,20 @@ export const Editor = () => {
     console.log(ids);
     const k = async () => {
       await axios.post('http://localhost:3002/prodel', { id: ids });
-    };
 
-    k();
-    setchange((e) => {
-      return !e;
-    });
-  };
-
-  useEffect(() => {
-    const getData = async () => {
       const d = await axios.get('http://localhost:3002/plandata');
-      const m = await axios.get('http://localhost:3002/prodata');
+      // const m = await axios.get('http://localhost:3002/prodata');
 
       console.log(d);
       setdata(d.data.Plans);
-      setProductData(m.data.Products);
+
+      setchange((e) => {
+        return !e;
+      });
     };
 
-    getData();
-  }, [change]);
+    k();
+  };
 
   console.log(data);
   return (
@@ -88,76 +105,12 @@ export const Editor = () => {
       <Container maxWidth="lg" className=" max-h-[100px] scrollhost  flex flex-col drop-shadow-xl">
         <div className="flex  space-x-2 bg-white rounded-xl drop-shadow-xl py-4">
           {/* Plans */}
-          {/* <div className=" flex flex-col basis-1/2 p-6 space-y-5">
-            <div className=" flex justify-between">
-              <Typography variant="h3" className="  font-thin">
-                Plans
-              </Typography>
-              <div className=" flex space-x-5 justify-end items-center ">
-                <IconButton className=" " onClick={handleDel} variant="contained">
-                  <DeleteIcon className="m-0 " />
-                </IconButton>
-                <Button onClick={handleClickOpen} variant="contained">
-                  Add
-                </Button>
-              </div>
-            </div>
-
-            <Divider />
-            <div className=" overflow-auto max-h-[500px]  ">
-              <div className=" flex flex-col justify-between space-y-3 ">
-                <div className=" flex outline outline-1 bg-gray-100 outline-gray-200 p-3 rounded-md   ">
-                  <div className=" basis-1/2 flex justify-center  items-center  ">
-                    <p className=" text-xl font-medium"> Name </p>
-                  </div>
-
-                  <div className=" basis-1/2 flex justify-center  items-center">
-                    <p className=" text-xl font-medium"> Price </p>
-                  </div>
-                  <div className=" basis-1/2 flex  justify-center items-center  ">
-                    <p className=" text-xl font-medium"> Months </p>
-                  </div>
-
-                  <div className=" basis-1/2 flex justify-center  items-center">
-                    <p className=" text-xl font-medium"> Edit </p>
-                  </div>
-                </div>
-                {data ? (
-                  data.map((plan) => {
-                    return (
-                      <div className=" flex outline outline-1 outline-gray-200 p-3 rounded-md   ">
-                        <div key={plan.name} className=" basis-1/3 flex justify-center  items-center  ">
-                          <p className=" text-xl"> {plan.name} </p>
-                        </div>
-
-                        <div key={plan.price} className=" basis-1/3 flex  justify-center items-center">
-                          <p> {plan.price} </p>
-                        </div>
-                        <div key={plan.months} className=" basis-1/3 flex justify-center items-center ">
-                          <p> {plan.months} </p>
-                        </div>
-                        <div key={plan.id} className=" basis-1/3 flex justify-end mr-2  pr-2 items-center ">
-                          <IconButton
-                            id={plan.id}
-                            onClick={() => handleDel(plan.id)}
-                            className=" p-2 bg-red-500 rounded-md shadow-inner drop-shadow"
-                          >
-                            <DeleteIcon className=" drop-shadow-md fill-white" />
-                          </IconButton>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p>Lodaing</p>
-                )}
-              </div>
-            </div>
-          </div> */}
 
           <Edm
+            key={435345345}
             name="Plan"
             data={data}
+            setdata={setdata}
             handleDel={handleDel}
             handleAdd={handleClickOpen}
             cre={['Name', 'Price', 'Months', 'Edit']}
@@ -167,95 +120,16 @@ export const Editor = () => {
           <Divider orientation="vertical" variant="middle" flexItem />
 
           {/* Products */}
-          <div className=" flex flex-col basis-1/2 p-6 space-y-5">
-            <div className=" flex justify-between">
-              <Typography variant="h3" className="  font-thin">
-                Products
-              </Typography>
-              <div className=" flex space-x-5 justify-end items-center ">
-                <IconButton className=" " onClick={handleProDel} variant="contained">
-                  <DeleteIcon className="m-0 " />
-                </IconButton>
-                <Button onClick={handleProClickOpen} variant="contained">
-                  Add
-                </Button>
-              </div>
-            </div>
 
-            <Divider />
-            <div className=" overflow-auto max-h-[500px]  ">
-              <div className=" flex flex-col justify-between space-y-3 ">
-                <div className=" flex outline outline-1 bg-gray-100 outline-gray-200 p-3 rounded-md   ">
-                  <div className=" basis-1/2 flex justify-center  items-center  ">
-                    <p className=" text-xl font-medium"> Name </p>
-                  </div>
-
-                  <div className=" basis-1/2 flex justify-center  items-center">
-                    <p className=" text-xl font-medium"> Price </p>
-                  </div>
-                  <div className=" basis-1/2 flex  justify-center items-center  ">
-                    <p className=" text-xl font-medium"> Quantity </p>
-                  </div>
-
-                  <div className=" basis-1/2 flex justify-center  items-center">
-                    <p className=" text-xl font-medium"> Edit </p>
-                  </div>
-                </div>
-                {ProductData ? (
-                  ProductData.map((plan) => {
-                    return (
-                      <div className=" flex outline outline-1 outline-gray-200 p-3 rounded-md   ">
-                        <div key={1} className=" basis-1/3 flex justify-center  items-center  ">
-                          <p className=" text-xl"> {plan.name} </p>
-                        </div>
-
-                        <div key={2} className=" basis-1/3 flex  justify-center items-center">
-                          <p> {plan.price} </p>
-                        </div>
-                        <div key={3} className=" basis-1/3 flex justify-center items-center ">
-                          <p> {plan.qnt} </p>
-                        </div>
-                        <div key={4} className=" basis-1/3 flex justify-end mr-2  pr-2 items-center ">
-                          <IconButton
-                            id={plan.id}
-                            onClick={() => handleProDel(plan.id)}
-                            className=" p-2 bg-red-500 rounded-md shadow-inner drop-shadow"
-                          >
-                            <DeleteIcon className=" drop-shadow-md fill-white" />
-                          </IconButton>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p>Lodaing</p>
-                )}
-              </div>
-            </div>
-          </div>
-          {/* <div className=" flex flex-col basis-1/2 p-6 space-y-5">
-            <div className=" flex justify-between">
-              <Typography variant="h3" className="  font-thin">
-                Products
-              </Typography>
-              <div className=" flex justify-end items-center ">
-                <Button variant="contained">Add</Button>
-              </div>
-            </div>
-            <Divider />
-            <div className=" scrollhost ">
-              <div className=" ">
-                <DataGrid
-                  className=" w-full h-[400px] min-h-[400px]]"
-                  rows={rows}
-                  columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  checkboxSelection
-                />
-              </div>
-            </div>
-          </div> */}
+          <Edm
+            key={56421321328}
+            name="Product"
+            data={ProductData}
+            handleDel={handleProDel}
+            handleAdd={handleProClickOpen}
+            cre={['Name', 'Price', 'Quantity', 'Edit']}
+            dm={['name', 'price', 'qnt']}
+          />
         </div>
 
         <PlanPopUp setopen={setOpen} open={open} setdata={setdata} />
@@ -460,3 +334,222 @@ export const del = () => {
     </div>
   );
 };
+
+/* <div className=" flex flex-col basis-1/2 p-6 space-y-5">
+            <div className=" flex justify-between">
+              <Typography variant="h3" className="  font-thin">
+                Plans
+              </Typography>
+              <div className=" flex space-x-5 justify-end items-center ">
+                <IconButton className=" " variant="contained">
+                  <DeleteIcon className="m-0 " />
+                </IconButton>
+                <Button onClick={handleClickOpen} variant="contained">
+                  Add
+                </Button>
+              </div>
+            </div>
+
+            <Divider />
+            <div className=" overflow-auto max-h-[500px]  ">
+              <div className=" flex flex-col justify-between space-y-3 ">
+                <div className=" flex outline outline-1 bg-gray-100 outline-gray-200 p-3 rounded-md   ">
+                  <div className=" basis-1/2 flex justify-center  items-center  ">
+                    <p className=" text-xl font-medium"> Name </p>
+                  </div>
+
+                  <div className=" basis-1/2 flex justify-center  items-center">
+                    <p className=" text-xl font-medium"> Price </p>
+                  </div>
+                  <div className=" basis-1/2 flex  justify-center items-center  ">
+                    <p className=" text-xl font-medium"> Months </p>
+                  </div>
+
+                  <div className=" basis-1/2 flex justify-center  items-center">
+                    <p className=" text-xl font-medium"> Edit </p>
+                  </div>
+                </div>
+                {data ? (
+                  data.map((plan) => {
+                    return (
+                      <div className=" flex outline outline-1 outline-gray-200 p-3 rounded-md   ">
+                        <div key={uniqid()} className=" basis-1/3 flex justify-center  items-center  ">
+                          <p className=" text-xl"> {plan.name} </p>
+                        </div>
+
+                        <div key={uniqid()} className=" basis-1/3 flex  justify-center items-center">
+                          <p> {plan.price} </p>
+                        </div>
+                        <div key={uniqid()} className=" basis-1/3 flex justify-center items-center ">
+                          <p> {plan.months} </p>
+                        </div>
+                        <div key={uniqid} className=" basis-1/3 flex justify-end mr-2  pr-2 items-center ">
+                          <IconButton
+                            id={plan.id}
+                            onClick={() => handleDel(plan.id)}
+                            className=" p-2 bg-red-500 rounded-md shadow-inner drop-shadow"
+                          >
+                            <DeleteIcon className=" drop-shadow-md fill-white" />
+                          </IconButton>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>Lodaing</p>
+                )}
+              </div>
+            </div>
+          </div> */
+
+/* <div className=" flex flex-col basis-1/2 p-6 space-y-5">
+            <div className=" flex justify-between">
+              <Typography variant="h3" className="  font-thin">
+                Plans
+              </Typography>
+              <div className=" flex space-x-5 justify-end items-center ">
+                <IconButton className=" " onClick={handleDel} variant="contained">
+                  <DeleteIcon className="m-0 " />
+                </IconButton>
+                <Button onClick={handleClickOpen} variant="contained">
+                  Add
+                </Button>
+              </div>
+            </div>
+
+            <Divider />
+            <div className=" overflow-auto max-h-[500px]  ">
+              <div className=" flex flex-col justify-between space-y-3 ">
+                <div className=" flex outline outline-1 bg-gray-100 outline-gray-200 p-3 rounded-md   ">
+                  <div className=" basis-1/2 flex justify-center  items-center  ">
+                    <p className=" text-xl font-medium"> Name </p>
+                  </div>
+
+                  <div className=" basis-1/2 flex justify-center  items-center">
+                    <p className=" text-xl font-medium"> Price </p>
+                  </div>
+                  <div className=" basis-1/2 flex  justify-center items-center  ">
+                    <p className=" text-xl font-medium"> Months </p>
+                  </div>
+
+                  <div className=" basis-1/2 flex justify-center  items-center">
+                    <p className=" text-xl font-medium"> Edit </p>
+                  </div>
+                </div>
+                {data ? (
+                  data.map((plan) => {
+                    return (
+                      <div className=" flex outline outline-1 outline-gray-200 p-3 rounded-md   ">
+                        <div key={plan.name} className=" basis-1/3 flex justify-center  items-center  ">
+                          <p className=" text-xl"> {plan.name} </p>
+                        </div>
+
+                        <div key={plan.price} className=" basis-1/3 flex  justify-center items-center">
+                          <p> {plan.price} </p>
+                        </div>
+                        <div key={plan.months} className=" basis-1/3 flex justify-center items-center ">
+                          <p> {plan.months} </p>
+                        </div>
+                        <div key={plan.id} className=" basis-1/3 flex justify-end mr-2  pr-2 items-center ">
+                          <IconButton
+                            id={plan.id}
+                            onClick={() => handleDel(plan.id)}
+                            className=" p-2 bg-red-500 rounded-md shadow-inner drop-shadow"
+                          >
+                            <DeleteIcon className=" drop-shadow-md fill-white" />
+                          </IconButton>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>Lodaing</p>
+                )}
+              </div>
+            </div>
+          </div> */
+
+//   <div className=" flex flex-col basis-1/2 p-6 space-y-5">
+//   <div className=" flex justify-between">
+//     <Typography variant="h3" className="  font-thin">
+//       Products
+//     </Typography>
+//     <div className=" flex space-x-5 justify-end items-center ">
+//       <IconButton className=" " onClick={handleProDel} variant="contained">
+//         <DeleteIcon className="m-0 " />
+//       </IconButton>
+//       <Button onClick={handleProClickOpen} variant="contained">
+//         Add
+//       </Button>
+//     </div>
+//   </div>
+
+//   <Divider />
+//   <div className=" overflow-auto max-h-[500px]  ">
+//     <div className=" flex flex-col justify-between space-y-3 ">
+//       <div className=" flex outline outline-1 bg-gray-100 outline-gray-200 p-3 rounded-md   ">
+//         <div className=" basis-1/2 flex justify-center  items-center  ">
+//           <p className=" text-xl font-medium"> Name </p>
+//         </div>
+
+//         <div className=" basis-1/2 flex justify-center  items-center">
+//           <p className=" text-xl font-medium"> Price </p>
+//         </div>
+//         <div className=" basis-1/2 flex  justify-center items-center  ">
+//           <p className=" text-xl font-medium"> Quantity </p>
+//         </div>
+
+//         <div className=" basis-1/2 flex justify-center  items-center">
+//           <p className=" text-xl font-medium"> Edit </p>
+//         </div>
+//       </div>
+//       {ProductData ? (
+//         ProductData.map((plan) => {
+//           return (
+//             <div className=" flex outline outline-1 outline-gray-200 p-3 rounded-md   ">
+//               <div key={1} className=" basis-1/3 flex justify-center  items-center  ">
+//                 <p className=" text-xl"> {plan.name} </p>
+//               </div>
+
+//               <div key={2} className=" basis-1/3 flex  justify-center items-center">
+//                 <p> {plan.price} </p>
+//               </div>
+//               <div key={3} className=" basis-1/3 flex justify-center items-center ">
+//                 <p> {plan.qnt} </p>
+//               </div>
+//               <div key={4} className=" basis-1/3 flex justify-end mr-2  pr-2 items-center ">
+//                 <IconButton
+//                   id={plan.id}
+//                   onClick={() => handleProDel(plan.id)}
+//                   className=" p-2 bg-red-500 rounded-md shadow-inner drop-shadow"
+//                 >
+//                   <DeleteIcon className=" drop-shadow-md fill-white" />
+//                 </IconButton>
+//               </div>
+//             </div>
+//           );
+//         })
+//       ) : (
+//         <p>Lodaing</p>
+//       )}
+//     </div>
+//   </div>
+// </div>
+
+async function postData(url = '', data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
+}

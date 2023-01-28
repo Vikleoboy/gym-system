@@ -46,7 +46,7 @@ function NavItem({ item }) {
 
       <ListItemText disableTypography primary={title} />
 
-      {info && info}
+      {/* {info && info} */}
     </StyledNavItem>
   );
 }

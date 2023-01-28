@@ -7,7 +7,15 @@ class User {
     this.path = path;
   }
 
-  exceptions = ["id", "status", "transections", "profile_pic", "Address"];
+  exceptions = [
+    "id",
+    "status",
+    "Transections",
+    "ProductTransections",
+    "profile_pic",
+    "Address",
+    "payment_method",
+  ];
   Usertemp() {
     let user = {
       id: uniqid(),
@@ -21,12 +29,27 @@ class User {
       check_in: null,
       check_out: null,
       payment_method: null,
-      transections: [],
+      Transections: [],
+      ProductTransections: [],
 
       status: null,
     };
 
     return user;
+  }
+
+  async getUser(id) {
+    let done = false;
+    for (let user of this.data.Users) {
+      if (user.id === id) {
+        done = true;
+
+        return user;
+      }
+    }
+    if (!done) {
+      throw "user not found ";
+    }
   }
 
   async deleteUser(id) {
@@ -36,6 +59,24 @@ class User {
         let index = this.data.Users.indexOf(user);
         this.data.Users.splice(index, 1);
         done = true;
+      }
+    }
+    if (!done) {
+      throw "user not found ";
+    }
+  }
+
+  async changeUser(id, temp) {
+    let done = false;
+    for (let user of this.data.Users) {
+      if (user.id === id) {
+        let index = this.data.Users.indexOf(user);
+
+        let newUser = { ...user, ...temp };
+
+        this.data.Users.splice(index, 1, newUser);
+        done = true;
+        return newUser;
       }
     }
     if (!done) {

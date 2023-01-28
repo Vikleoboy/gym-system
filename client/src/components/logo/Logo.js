@@ -5,6 +5,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Box, Link } from '@mui/material';
 
+import l from './j.png';
+
 // ----------------------------------------------------------------------
 
 const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
@@ -80,7 +82,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
 
   return (
     <Link to="/" component={RouterLink} sx={{ display: 'contents' }}>
-      {logo}
+      <img src={l} alt="nothing" className=" w-[100px] ml-3" />
     </Link>
   );
 });
