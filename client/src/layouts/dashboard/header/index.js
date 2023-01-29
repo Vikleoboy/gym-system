@@ -43,36 +43,32 @@ Header.propTypes = {
 };
 
 export default function Header({ onOpenNav }) {
-  return (
-    <StyledRoot>
-      <StyledToolbar>
-        <IconButton
-          onClick={onOpenNav}
-          sx={{
-            mr: 1,
-            color: 'text.primary',
-            display: { lg: 'none' },
-          }}
-        >
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-
-        <Searchbar />
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={{
-            xs: 0.5,
-            sm: 1,
-          }}
-        >
-          <LanguagePopover />
-          <NotificationsPopover />
-          <AccountPopover />
-        </Stack>
-      </StyledToolbar>
-    </StyledRoot>
-  );
+  // <StyledRoot>
+  //   <StyledToolbar>
+  //     <IconButton
+  //       onClick={onOpenNav}
+  //       sx={{
+  //         mr: 1,
+  //         color: 'text.primary',
+  //         display: { lg: 'none' },
+  //       }}
+  //     >
+  //       <Iconify icon="eva:menu-2-fill" />
+  //     </IconButton>
+  //     <Searchbar />
+  //     <Box sx={{ flexGrow: 1 }} />
+  //     <Stack
+  //       direction="row"
+  //       alignItems="center"
+  //       spacing={{
+  //         xs: 0.5,
+  //         sm: 1,
+  //       }}
+  //     >
+  //       <LanguagePopover />
+  //       <NotificationsPopover />
+  //       <AccountPopover />
+  //     </Stack>
+  //   </StyledToolbar>
+  // </StyledRoot>
 }
