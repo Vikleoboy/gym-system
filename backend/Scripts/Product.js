@@ -7,7 +7,7 @@ class Product {
     this.path = path;
   }
 
-  exceptions = ["id"];
+  exceptions = ["id", "qnt"];
   Planstemp() {
     let user = {
       id: uniqid(),

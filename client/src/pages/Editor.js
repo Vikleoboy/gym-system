@@ -127,8 +127,8 @@ export const Editor = () => {
             data={ProductData}
             handleDel={handleProDel}
             handleAdd={handleProClickOpen}
-            cre={['Name', 'Price', 'Quantity', 'Edit']}
-            dm={['name', 'price', 'qnt']}
+            cre={['Name', 'Price', 'Edit']}
+            dm={['name', 'price']}
           />
         </div>
 
@@ -218,7 +218,7 @@ export const PlanPopUp = (props) => {
             autoFocus
             margin="dense"
             id="name"
-            label="Price"
+            label="Months"
             type="Number"
             fullWidth
             variant="standard"
@@ -298,17 +298,6 @@ export const ProPopUp = (props) => {
 
           <TextField
             onChange={handlePrice}
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Price"
-            type="Number"
-            fullWidth
-            variant="standard"
-          />
-
-          <TextField
-            onChange={handleMonths}
             autoFocus
             margin="dense"
             id="name"

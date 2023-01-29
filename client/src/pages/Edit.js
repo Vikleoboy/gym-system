@@ -95,13 +95,19 @@ export const Edit = () => {
           city: ' Nanded, Maharashtra ',
           country: 'India',
         },
+        client: {
+          company: `Name : ${userData.name}`,
+          address: `Ph-Num ${userData.ph_Number} : `,
+          // city: 'Nanded, Maharashtra ',
+          // country: 'India',
+        },
         information: {
           // Invoice number
           number: userData.id,
           // Invoice data
           date: `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`,
           // Invoice due date
-          'due-date': 'none',
+          'due-date': `${o.getDate()}-${o.getMonth() + 1}-${o.getFullYear()}`,
         },
         images: {
           // The logo on top of your invoice
@@ -117,34 +123,41 @@ export const Edit = () => {
     k();
   }, [userData?.Transections, userData?.ProductTransections]);
 
-  // useEffect(() => {
-  //   const k = async () => {
-  //     let allMonths = 0;
-  //     if (userData !== undefined) {
-  //       userData.Transections.map((i) => {
-  //         console.log(i.months, 'this hreeeee ');
-  //         allMonths += i.months;
-  //         return allMonths;
-  //       });
+  useEffect(() => {
+    const k = async () => {
+      let allMonths = 0;
+      if (userData !== undefined) {
+        userData.Transections.map((i) => {
+          console.log(i.months, 'this hreeeee ');
+          allMonths += parseInt(i.months, 10);
+          return allMonths;
+        });
 
-  //       const d = new Date(userData.check_out);
-  //       allMonths += d.getMonth();
-  //       if (allMonths < 12) {
-  //         console.log(allMonths);
-  //         d.setMonth(allMonths);
-  //         await axios.post('http://localhost:3002/changeUser', { id: userData.id, u: { ...userData, check_out: d } });
-  //       } else if (allMonths > 12) {
-  //         const y = Math.floor(allMonths / 12);
-  //         const m = allMonths % 12;
-  //         d.setFullYear(d.getFullYear() + y);
-  //         d.setMonth(m);
-  //         await axios.post('http://localhost:3002/changeUser', { id: userData.id, u: { ...userData, check_out: d } });
-  //       }
-  //     }
-  //   };
+        const d = new Date(userData.check_in);
 
-  //   k();
-  // }, [userData?.Transections, userData?.ProductTransections]);
+        allMonths += d.getMonth();
+
+        console.log(allMonths, ' here all months ');
+        if (allMonths < 12) {
+          console.log(allMonths);
+          d.setMonth(allMonths);
+          await axios.post('http://localhost:3002/changeUser', { id: userData.id, u: { ...userData, check_out: d } });
+        } else if (allMonths > 12) {
+          const y = Math.floor(allMonths / 12);
+          const m = allMonths % 12;
+          d.setFullYear(d.getFullYear() + y);
+          d.setMonth(m);
+          await axios.post('http://localhost:3002/changeUser', { id: userData.id, u: { ...userData, check_out: d } });
+        }
+        // const shit = userData.check_out;
+        // if (shit !== d) {
+        //   setchange((e) => !e);
+        // }
+      }
+    };
+
+    k();
+  }, [userData?.Transections]);
 
   const handleProClickOpen = () => {
     setproOpen(true);
