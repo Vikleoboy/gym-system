@@ -85,34 +85,46 @@ app.get("/prodata", async (req, res) => {
 // });
 
 app.post("/del", async (req, res) => {
-  console.log("indel");
-  const i = req.body.id;
+  try {
+    console.log("indel");
+    const i = req.body.id;
 
-  const user = new User("../Database/User.json");
-  await user.build();
-  await user.deleteUser(i);
-  await user.end();
-  res.json({ done: true });
+    const user = new User("../Database/User.json");
+    await user.build();
+    await user.deleteUser(i);
+    await user.end();
+    res.json({ done: true });
+  } catch (e) {
+    res.json({ done: false });
+  }
 });
 
 app.get("/getUser/:id", async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const user = new User("../Database/User.json");
-  await user.build();
-  const data = await user.getUser(id);
-  await user.end();
-  res.json(data);
+    const user = new User("../Database/User.json");
+    await user.build();
+    const data = await user.getUser(id);
+    await user.end();
+    res.json(data);
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.get("/getPro/:id", async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const pro = new Product("../Database/Product.json");
-  await pro.build();
-  const data = await pro.getPro(id);
-  await pro.end();
-  res.json(data);
+    const pro = new Product("../Database/Product.json");
+    await pro.build();
+    const data = await pro.getPro(id);
+    await pro.end();
+    res.json(data);
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.post("/getInvoice/", async (req, res) => {
@@ -123,77 +135,100 @@ app.post("/getInvoice/", async (req, res) => {
 
     res.send(incoive);
   } catch (e) {
+    res.json({ done: false });
     console.log("error here");
   }
 });
 
 app.get("/getPlan/:id", async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const user = new Plans("../Database/Plans.json");
-  await user.build();
-  const data = await user.getPlan(id);
-  await user.end();
-  res.json(data);
+    const user = new Plans("../Database/Plans.json");
+    await user.build();
+    const data = await user.getPlan(id);
+    await user.end();
+    res.json(data);
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.post("/plandel", async (req, res) => {
-  console.log("indel");
-  const i = req.body.id;
+  try {
+    console.log("indel");
+    const i = req.body.id;
 
-  const user = new Plans("../Database/Plans.json");
-  await user.build();
-  await user.deletePlan(i);
-  console.log("k");
-  await user.end();
-  res.json({ ok: true });
-  console.log("all k");
+    const user = new Plans("../Database/Plans.json");
+    await user.build();
+    await user.deletePlan(i);
+    console.log("k");
+    await user.end();
+    res.json({ ok: true });
+    console.log("all k");
+  } catch {
+    res.json({ done: false });
+  }
 });
 app.post("/Textdel", async (req, res) => {
-  console.log("indel");
-  const i = req.body.id;
+  try {
+    console.log("indel");
+    const i = req.body.id;
 
-  const user = new Text("../Database/Whats.json");
-  await user.build();
-  await user.deletePlan(i);
-  console.log("k");
-  await user.end();
-  res.json({ ok: true });
-  console.log("all k");
+    const user = new Text("../Database/Whats.json");
+    await user.build();
+    await user.deletePlan(i);
+    console.log("k");
+    await user.end();
+    res.json({ ok: true });
+    console.log("all k");
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.post("/prodel", async (req, res) => {
-  console.log("indel");
-  const i = req.body.id;
+  try {
+    console.log("indel");
+    const i = req.body.id;
 
-  console.log(i);
-  const user = new Product("../Database/Product.json");
-  await user.build();
-  await user.deletePro(i);
-  await user.end();
-  res.json({ ok: true });
+    console.log(i);
+    const user = new Product("../Database/Product.json");
+    await user.build();
+    await user.deletePro(i);
+    await user.end();
+    res.json({ ok: true });
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.post("/addText", async (req, res) => {
-  let data = req.body;
+  try {
+    let data = req.body;
 
-  const user = new Text("../Database/Whats.json");
-  await user.build();
-  await user.addPlan(data);
-  let n = await user.end();
+    const user = new Text("../Database/Whats.json");
+    await user.build();
+    await user.addPlan(data);
+    let n = await user.end();
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.get("/Textdata", async (req, res) => {
-  const user = new Text("../Database/Whats.json");
-  let k = await user.build();
-  res.json(k);
-  let n = await user.end();
-  console.log(n);
+  try {
+    const user = new Text("../Database/Whats.json");
+    let k = await user.build();
+    res.json(k);
+    let n = await user.end();
+    console.log(n);
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.post("/adduser", async (req, res) => {
-  let data = req.body;
-
   // base64.img(
   //   data.profile_pic,
   //   `${databasedir + path + name} `,
@@ -204,6 +239,7 @@ app.post("/adduser", async (req, res) => {
   // );
 
   try {
+    let data = req.body;
     const user = new User("../Database/User.json");
     await user.build();
     const m = await user.addUser(data);
@@ -217,23 +253,31 @@ app.post("/adduser", async (req, res) => {
 });
 
 app.post("/addPlan", async (req, res) => {
-  let data = req.body;
+  try {
+    let data = req.body;
 
-  const user = new Plans("../Database/Plans.json");
-  await user.build();
-  await user.addPlan(data);
-  await user.end();
-  res.send("done");
+    const user = new Plans("../Database/Plans.json");
+    await user.build();
+    await user.addPlan(data);
+    await user.end();
+    res.send("done");
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.post("/addPro", async (req, res) => {
-  let data = req.body;
+  try {
+    let data = req.body;
 
-  const pro = new Product("../Database/Product.json");
-  await pro.build();
-  await pro.addPro(data);
-  await pro.end();
-  res.send("done");
+    const pro = new Product("../Database/Product.json");
+    await pro.build();
+    await pro.addPro(data);
+    await pro.end();
+    res.send("done");
+  } catch {
+    res.json({ done: false });
+  }
 });
 
 app.listen(port, () => {
