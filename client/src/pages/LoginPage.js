@@ -1,7 +1,15 @@
 import { Helmet } from 'react-helmet-async';
+import { useContext } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+
+// Firebase
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+
+import { usr } from '../firebase/userContext';
+import { auth } from '../firebase/firebase';
+
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -43,6 +51,20 @@ const StyledContent = styled('div')(({ theme }) => ({
 export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
 
+  const gout = () => {
+    console.log(auth.currentUser);
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        console.log(auth);
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
+
+  console.log(auth.currentUser);
+
   return (
     <>
       <Helmet>
@@ -50,13 +72,13 @@ export default function LoginPage() {
       </Helmet>
 
       <StyledRoot>
-        <Logo
+        {/* <Logo
           sx={{
             position: 'fixed',
             top: { xs: 16, sm: 24, md: 40 },
             left: { xs: 16, sm: 24, md: 40 },
           }}
-        />
+        /> */}
 
         {mdUp && (
           <StyledSection>
@@ -83,7 +105,7 @@ export default function LoginPage() {
                 <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
               </Button>
 
-              <Button fullWidth size="large" color="inherit" variant="outlined">
+              <Button onClick={gout} fullWidth size="large" color="inherit" variant="outlined">
                 <Iconify icon="eva:facebook-fill" color="#1877F2" width={22} height={22} />
               </Button>
 

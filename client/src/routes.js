@@ -1,4 +1,7 @@
 import { Navigate, useRoutes } from 'react-router-dom';
+import { useContext } from 'react';
+
+import { usr } from './firebase/userContext';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
@@ -21,10 +24,20 @@ import { Whatsapp } from './pages/WhatsAppText';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const { data } = useContext(usr);
+  const Log = ({ children }) => {
+    console.log('Frome ROUTES ', data);
+    return data ? children : <Navigate to="/login" />;
+  };
+
   const routes = useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: (
+        <Log>
+          <DashboardLayout />
+        </Log>
+      ),
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },

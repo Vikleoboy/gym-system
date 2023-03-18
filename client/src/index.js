@@ -7,6 +7,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import { UsrContextProvider } from './firebase/userContext';
 
 // ----------------------------------------------------------------------
 
@@ -14,9 +15,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <HelmetProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <UsrContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </UsrContextProvider>
   </HelmetProvider>
 );
 

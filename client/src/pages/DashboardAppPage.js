@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
@@ -7,8 +7,9 @@ import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantity
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Button } from '@mui/material';
 // components
+import { usr } from '../firebase/userContext';
 import Iconify from '../components/iconify';
 // sections
 import {
@@ -46,6 +47,8 @@ export default function DashboardAppPage() {
     '10/01/2003',
     '11/01/2003',
   ];
+
+  const { login, dispatch } = useContext(usr);
 
   useEffect(() => {
     const k = async () => {
@@ -124,6 +127,11 @@ export default function DashboardAppPage() {
   }, [plans, userData]);
 
   console.log(rp);
+
+  const onLg = () => {
+    dispatch({ type: 'LogOut', payload: null });
+    console.log(login);
+  };
   return (
     <>
       <Helmet>
@@ -131,9 +139,21 @@ export default function DashboardAppPage() {
       </Helmet>
 
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
-        </Typography>
+        <div className="flex  justify-between">
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            Hi, Welcome back
+          </Typography>
+          <div>
+            <Button
+              onClick={onLg}
+              className=" bg-red-600"
+              variant="contained"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              LogOut
+            </Button>
+          </div>
+        </div>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
