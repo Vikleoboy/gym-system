@@ -39,6 +39,7 @@ export const UserMain = (props) => {
     profile_pic: null,
     ph_Number: null,
     Address: null,
+    Adhar: null,
     Plan: 0,
     check_in: date,
     check_out: null,
@@ -128,6 +129,9 @@ export const UserMain = (props) => {
 
   const handleAddress = (event) => {
     setUser({ ...User, Address: event.target.value });
+  };
+  const handleAdhar = (event) => {
+    setUser({ ...User, Adhar: event.target.value });
   };
 
   const handleNumber = (event) => {
@@ -279,6 +283,17 @@ export const UserMain = (props) => {
                   multiline
                   variant="outlined"
                   rows={5}
+                  className="  max-w-[2000p x] w-[100%]  "
+                />
+                <TextField
+                  value={User.Adhar}
+                  type="number"
+                  required
+                  onChange={handleAdhar}
+                  id="filled-basic"
+                  label="Adhar No ."
+                  multiline
+                  variant="outlined"
                   className="  max-w-[2000p x] w-[100%]  "
                 />
               </div>

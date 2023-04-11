@@ -31,7 +31,7 @@ class User {
       payment_method: null,
       Transections: [],
       ProductTransections: [],
-
+      Adhar: null,
       status: null,
     };
 
