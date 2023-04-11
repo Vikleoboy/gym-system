@@ -130,13 +130,16 @@ export default function UserPage() {
       const k = async () => {
         const d = new Date(user.check_out);
         const t = new Date();
-        console.log('in k ');
-        if (d.getMonth() === t.getMonth() && d.getDate() === t.getDate()) {
+
+        let dif = d.getTime() - t.getTime();
+        let days = dif / (1000 * 3600 * 24);
+        // d.getMonth() === t.getMonth() && -5 < t.getDate() - d.getDate() < 0
+        // (d.getMonth() < t.getMonth() || (d.getDate() < t.getDate() && d.getMonth() === t.getMonth())
+        console.log(days);
+        if (0 <= days && days <= 5) {
+          await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: '5 days' } });
+        } else if (days <= 0) {
           await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: 'Expired' } });
-        } else if (d.getMonth() === t.getMonth()) {
-          if (t.getDate() - d.getDate() <= 5) {
-            await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: '5 days' } });
-          }
         } else {
           console.log('in else', user);
           await axios.post('http://localhost:3002/changeUser', { id: user.id, u: { ...user, status: 'Paid' } });
@@ -156,6 +159,23 @@ export default function UserPage() {
       setUserData((u) => {
         return u.filter((i) => {
           if (i.status === '5 days') {
+            return true;
+          }
+          return false;
+        });
+      });
+    } else {
+      setchange((e) => !e);
+    }
+  };
+
+  const handleSwitchExp = () => {
+    setchecked((e) => !e);
+
+    if (!checked) {
+      setUserData((u) => {
+        return u.filter((i) => {
+          if (i.status === 'Expired') {
             return true;
           }
           return false;
@@ -259,12 +279,16 @@ export default function UserPage() {
           </Button>
         </Stack>
 
-        <FormGroup>
+        <div className=" flex space-x-3">
           <FormControlLabel
             control={<Switch onChange={handleSwitch} value={checked} defaultChecked={false} />}
             label="5 days "
           />
-        </FormGroup>
+          <FormControlLabel
+            control={<Switch onChange={handleSwitchExp} value={checked} defaultChecked={false} />}
+            label="Expired"
+          />
+        </div>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
