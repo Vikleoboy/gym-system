@@ -89,7 +89,7 @@ export const Edit = () => {
       const imp = await axios.post(`http://localhost:3002/getInvoice`, {
         products: InTotal,
         sender: {
-          company: 'My Studie Point',
+          company: 'My Study Point',
           address:
             'Shop No - 107 & 108, Apurva Plaza Bhavsar Chauk, Z.P. Colony, Ashtvinayak Nagar, Nanded, Maharashtra 431605',
           zip: '431605',
