@@ -41,7 +41,7 @@ app.post("/changeUser", async (req, res) => {
     await user.build();
     let d = await user.changeUser(id, u);
     await user.end();
-
+    console.log(d.ph_Number);
     res.json(d);
   } catch (e) {
     res.json(e);
@@ -53,9 +53,7 @@ app.get("/plandata", async (req, res) => {
 
   let d = await plan.build();
   res.json(d);
-  console.log("before end");
   await plan.end();
-  console.log("after end");
 });
 
 app.get("/prodata", async (req, res) => {
@@ -65,7 +63,6 @@ app.get("/prodata", async (req, res) => {
   res.json(await pro.data);
 
   await pro.end();
-  console.log("after end");
 });
 
 // app.post("/dimage", (req, res) => {\
@@ -73,20 +70,17 @@ app.get("/prodata", async (req, res) => {
 //   let databasedir = "../Database/";
 //   let path = "images/";
 //   let name = data.name + data.ph_Number + ".jpg";
-//   console.log(req.body.url);
 //   base64.img(
 //     req.body.url,
 //     `${databasedir + path + name} `,
 //     "1",
 //     function (error, filepath) {
-//       console.log(error);
 //     }
 //   );
 // });
 
 app.post("/del", async (req, res) => {
   try {
-    console.log("indel");
     const i = req.body.id;
 
     const user = new User("../Database/User.json");
@@ -129,14 +123,12 @@ app.get("/getPro/:id", async (req, res) => {
 
 app.post("/getInvoice/", async (req, res) => {
   let data = req.body;
-  console.log(JSON.stringify(data));
   try {
     let incoive = await easyinvoice.createInvoice(data);
 
     res.send(incoive);
   } catch (e) {
     res.json({ done: false });
-    console.log("error here");
   }
 });
 
@@ -156,32 +148,26 @@ app.get("/getPlan/:id", async (req, res) => {
 
 app.post("/plandel", async (req, res) => {
   try {
-    console.log("indel");
     const i = req.body.id;
 
     const user = new Plans("../Database/Plans.json");
     await user.build();
     await user.deletePlan(i);
-    console.log("k");
     await user.end();
     res.json({ ok: true });
-    console.log("all k");
   } catch {
     res.json({ done: false });
   }
 });
 app.post("/Textdel", async (req, res) => {
   try {
-    console.log("indel");
     const i = req.body.id;
 
     const user = new Text("../Database/Whats.json");
     await user.build();
     await user.deletePlan(i);
-    console.log("k");
     await user.end();
     res.json({ ok: true });
-    console.log("all k");
   } catch {
     res.json({ done: false });
   }
@@ -189,10 +175,8 @@ app.post("/Textdel", async (req, res) => {
 
 app.post("/prodel", async (req, res) => {
   try {
-    console.log("indel");
     const i = req.body.id;
 
-    console.log(i);
     const user = new Product("../Database/Product.json");
     await user.build();
     await user.deletePro(i);
@@ -222,7 +206,6 @@ app.get("/Textdata", async (req, res) => {
     let k = await user.build();
     res.json(k);
     let n = await user.end();
-    console.log(n);
   } catch {
     res.json({ done: false });
   }
@@ -234,7 +217,6 @@ app.post("/adduser", async (req, res) => {
   //   `${databasedir + path + name} `,
   //   name,
   //   function (error, filepath) {
-  //     console.log(error);
   //   }
   // );
 
@@ -247,7 +229,6 @@ app.post("/adduser", async (req, res) => {
 
     res.send(m);
   } catch (e) {
-    console.log(e);
     res.send("done");
   }
 });
@@ -280,6 +261,4 @@ app.post("/addPro", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+app.listen(port, () => {});

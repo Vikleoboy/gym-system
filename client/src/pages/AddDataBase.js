@@ -64,9 +64,7 @@ export const AddDataBase = (props) => {
     const imageSrc = webcamRef.current.getScreenshot();
     setphoto(true);
     setimg(imageSrc);
-    axios.post('http://localhost:3002/dimage', {
-      url: imageSrc,
-    });
+
     // props.changePopup(img);
   };
 

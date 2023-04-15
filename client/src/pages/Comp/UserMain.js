@@ -26,10 +26,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import Iconify from '../../components/iconify';
 import { AddDataBase } from '../AddDataBase';
+import { AvaEdi } from './AvtarEditor';
 
 export const UserMain = (props) => {
   const [PlanData, setPlanData] = useState(null);
+
   const [popUp, setpopUp] = useState(false);
+  const [localPopUp, setlocalPopUp] = useState(null);
   const [out, setout] = useState(false);
   const date = new Date();
   const [User, setUser] = useState({
@@ -38,6 +41,7 @@ export const UserMain = (props) => {
     Dob: date,
     profile_pic: null,
     ph_Number: null,
+    ph_NumberTwo: null,
     Address: null,
     Adhar: null,
     Plan: 0,
@@ -111,6 +115,12 @@ export const UserMain = (props) => {
     setUser({ ...User, payment_method: newValue.target.value });
   };
 
+  const handleLocalImage = (newValue) => {
+    const url = URL.createObjectURL(newValue.target.files[0]);
+    setUser({ ...User, profile_pic: url });
+    setlocalPopUp((e) => !e);
+  };
+
   const handleCheckIn = (newValue) => {
     setUser({ ...User, checkIn: newValue });
   };
@@ -137,6 +147,9 @@ export const UserMain = (props) => {
   const handleNumber = (event) => {
     setUser({ ...User, ph_Number: event.target.value });
   };
+  const handleNumberTwo = (event) => {
+    setUser({ ...User, ph_NumberTwo: event.target.value });
+  };
 
   const handlePlan = (event) => {
     setUser({ ...User, Plan: event.target.value });
@@ -150,6 +163,12 @@ export const UserMain = (props) => {
   const changePopup = (url) => {
     setUser({ ...User, profile_pic: url });
     setpopUp((k) => {
+      return !k;
+    });
+  };
+  const changePopupLocal = (url) => {
+    setUser({ ...User, profile_pic: url });
+    setlocalPopUp((k) => {
       return !k;
     });
   };
@@ -177,18 +196,19 @@ export const UserMain = (props) => {
       } else {
         await axios.post('http://localhost:3002/addUser', { ...User, Transections: [PlanData[User.Plan / 10 - 1]] });
       }
+
+      navigate('/dashboard/user');
     };
 
     k();
-
-    navigate('/dashboard/user');
   };
 
   console.log(PlanData);
   return (
     <>
       {popUp && <AddDataBase changePopup={changePopup} />}
-      <Container maxWidth="lg" className=" flex flex-col">
+      {localPopUp && <AvaEdi img={User.profile_pic} changePopup={changePopupLocal} />}
+      <Container maxWidth="lg" className=" z-0 flex flex-col">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
             New Users
@@ -197,7 +217,7 @@ export const UserMain = (props) => {
             Submit
           </Button>
         </Stack>
-        <div className=" bg-white rounded-xl drop-shadow-xl">
+        <div className="z-0 bg-white rounded-xl drop-shadow-xl">
           <div className=" flex ">
             <div className=" basis-1/2 py-10 flex flex-col items-center justify-center space-y-10">
               {/* Heading */}
@@ -206,9 +226,16 @@ export const UserMain = (props) => {
               <div className=" border-b-2 border-solid  drop-shadow-xl   flex flex-col justify-center items-center space-y-6">
                 <Typography variant="h4"> Personal Information</Typography>
                 <Avatar src={User.profile_pic} sx={{ width: 106, height: 106 }} className="   " alt="choose image" />
-                <Button onClick={changePopup} variant="outlined" className="">
-                  Choose Image
-                </Button>
+                <div className=" flex space-x-4">
+                  <Button onClick={changePopup} variant="outlined" className="">
+                    Click Image
+                  </Button>
+                  <Button onClick={() => document.getElementById('inshit').click()} variant="outlined">
+                    Choose File
+                  </Button>
+
+                  <input id="inshit" type="file" name="myImage" className=" hidden" onChange={handleLocalImage} />
+                </div>
                 <div className="border-b-2  border-b-gray-400 " />
               </div>
 
@@ -267,6 +294,22 @@ export const UserMain = (props) => {
                   variant="outlined"
                   className="  max-w-[2000px] w-[100%]"
                   value={User.ph_Number}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">91+</InputAdornment>,
+                  }}
+                  onInput={(e) => {
+                    e.target.value = Math.max(0, parseInt(e.target.value, 10)).toString().slice(0, 10);
+                  }}
+                />
+                <TextField
+                  onChange={handleNumberTwo}
+                  id="filled-basic"
+                  type="number"
+                  label="Ph-Number 2"
+                  placeholder="Second Number"
+                  variant="outlined"
+                  className="  max-w-[2000px] w-[100%]"
+                  value={User.ph_NumberTwo}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">91+</InputAdornment>,
                   }}

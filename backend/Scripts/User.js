@@ -15,6 +15,7 @@ class User {
     "profile_pic",
     "Address",
     "payment_method",
+    "ph_NumberTwo",
   ];
   Usertemp() {
     let user = {
@@ -24,6 +25,7 @@ class User {
       Dob: null,
       profile_pic: null,
       ph_Number: null,
+      ph_NumberTwo: null,
       Address: null,
       Plan: null,
       check_in: null,
@@ -92,17 +94,14 @@ class User {
     let usertemp = this.Usertemp();
     for (let key in userdetails) {
       try {
-        console.log(key in usertemp);
         if (key in usertemp) {
           usertemp[key] = userdetails[key];
         } else if (this.exceptions.includes(key)) {
-          console.log("ok");
+          console.log("uesr n");
         } else {
           throw "Give right Arguments mf!";
         }
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
     }
 
     for (let i in usertemp) {
@@ -110,8 +109,6 @@ class User {
         throw "Incomplete User";
       }
     }
-
-    console.log(usertemp);
 
     this.data.Users.push(usertemp);
   }
@@ -122,14 +119,11 @@ class User {
       this.data = JSON.parse(d);
 
       for (let i of this.mainObj) {
-        console.log(this.mainObj);
         if (!(i in this.data)) {
           this.data[i] = [];
         }
       }
-    } catch {
-      console.log(" error in build ");
-    }
+    } catch {}
   }
 
   async end() {
@@ -144,7 +138,5 @@ class User {
 // await k.deleteAllUsers();
 
 // await k.end();
-
-// console.log(k.path, k.data);
 
 export default User;

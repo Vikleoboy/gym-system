@@ -194,10 +194,10 @@ export const Edit = () => {
 
   return (
     <>
-      <div className=" flex flex-col space-y-5 ">
+      <div className=" z-0 flex flex-col space-y-5 ">
         {userData ? <UserMain id={userData.id} edit data={userData} /> : <p>Loading</p>}
 
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" className=" z-0">
           <div className="flex flex-col bg-white drop-shadow-lg rounded-lg ">
             <div className="flex">
               {userData ? (
