@@ -17,6 +17,11 @@ import {
   FormHelperText,
   Stack,
   InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
@@ -50,6 +55,22 @@ export const UserMain = (props) => {
     payment_method: null,
   });
 
+  const [DelOpen, setDelOpen] = useState(false);
+  
+  const handleDelShift = () => {
+    setDelOpen((e) => !e);
+  };
+
+  const handleDel = (inid) => {
+    console.log(inid);
+    const k = async () => {
+      await axios.post('http://localhost:3002/del', { id: inid });
+    };
+
+    navigate('/dashboard/user');
+    k();
+  };
+
   let num = 0;
   useEffect(() => {
     const k = async () => {
@@ -69,7 +90,7 @@ export const UserMain = (props) => {
   useEffect(() => {
     if (PlanData !== null && User.Plan !== 0) {
       console.log(User.Plan);
-      const end = new Date();
+      const end = new Date(User.check_in);
       const m = end.getMonth();
       let ahh = 0;
       let ny = 0;
@@ -122,11 +143,11 @@ export const UserMain = (props) => {
   };
 
   const handleCheckIn = (newValue) => {
-    setUser({ ...User, checkIn: newValue });
+    setUser({ ...User, check_in: newValue });
   };
 
   const handleCheckOut = (newValue) => {
-    setUser({ ...User, checkOut: newValue });
+    setUser({ ...User, check_out: newValue });
   };
 
   const handleDob = (newValue) => {
@@ -208,15 +229,46 @@ export const UserMain = (props) => {
     <>
       {popUp && <AddDataBase changePopup={changePopup} />}
       {localPopUp && <AvaEdi img={User.profile_pic} changePopup={changePopupLocal} />}
+      <Dialog
+        open={DelOpen}
+        onClose={handleDelShift}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Remove User'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you want to delete this User ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDelShift}>Disagree</Button>
+          <Button onClick={() => handleDel(User.id)} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Container maxWidth="lg" className=" z-0 flex flex-col">
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+        <div className=" flex justify-between items-center mb-3">
           <Typography variant="h4" gutterBottom>
             New Users
           </Typography>
-          <Button onClick={sendData} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Submit
-          </Button>
-        </Stack>
+          <div className=" flex space-x-3 ">
+            {props.edit && (
+              <Button
+                className=" bg-red-600"
+                onClick={handleDelShift}
+                variant="contained"
+                startIcon={<Iconify icon="eva:plus-fill" />}
+              >
+                Delete
+              </Button>
+            )}
+            <Button onClick={sendData} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+              Submit
+            </Button>
+          </div>
+        </div>
         <div className="z-0 bg-white rounded-xl drop-shadow-xl">
           <div className=" flex ">
             <div className=" basis-1/2 py-10 flex flex-col items-center justify-center space-y-10">

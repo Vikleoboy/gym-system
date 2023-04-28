@@ -24,6 +24,7 @@ import {
   FormGroup,
   FormControlLabel,
   Switch,
+ 
 } from '@mui/material';
 import axios from 'axios';
 // components
@@ -81,6 +82,8 @@ function applySortFilter(array, comparator, query) {
 export default function UserPage() {
   const [UserData, setUserData] = useState([]);
 
+
+
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(null);
@@ -103,17 +106,7 @@ export default function UserPage() {
 
   const [checked, setchecked] = useState(false);
 
-  const handleDel = (inid) => {
-    console.log(inid);
-    const k = async () => {
-      await axios.post('http://localhost:3002/del', { id: inid });
-    };
 
-    setchange((e) => {
-      return !e;
-    });
-    k();
-  };
 
   useEffect(() => {
     const k = async () => {
@@ -238,6 +231,8 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - UserData.length) : 0;
 
   const filteredUsers = applySortFilter(UserData, getComparator(order, orderBy), filterName);
@@ -332,7 +327,7 @@ export default function UserPage() {
                         <TableCell align="left">{status}</TableCell>
                         <TableCell align="left">{plans[Plan / 10 - 1]?.name}</TableCell>
 
-                        <TableCell align="right" className="flex  ">
+                        <TableCell align="left" className=" ">
                           {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton> */}
@@ -340,10 +335,8 @@ export default function UserPage() {
                             <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
                             Edit
                           </MenuItem>
-                          <MenuItem key={id} onClick={() => handleDel(id)} sx={{ color: 'error.main' }}>
-                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-                            Delete
-                          </MenuItem>
+                          
+                          
                         </TableCell>
 
                         <Popover
