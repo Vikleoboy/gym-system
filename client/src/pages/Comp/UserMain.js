@@ -146,6 +146,10 @@ export const UserMain = (props) => {
     setUser({ ...User, check_in: newValue });
   };
 
+  const handleEdu = (event) => {
+    setUser({ ...User, edu: event.target.value });
+  };
+
   const handleCheckOut = (newValue) => {
     setUser({ ...User, check_out: newValue });
   };
