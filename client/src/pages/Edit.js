@@ -89,9 +89,8 @@ export const Edit = () => {
       const imp = await axios.post(`http://localhost:3002/getInvoice`, {
         products: InTotal,
         sender: {
-          company: 'My Study Point',
-          address:
-            'Shop No - 107 & 108, Apurva Plaza Bhavsar Chauk, Z.P. Colony, Ashtvinayak Nagar, Nanded, Maharashtra 431605',
+          company: 'DESHMUKH HEALTH CLUB',
+          address: 'DESHMUKH HEALTH CLUB Deshmukh Gym,Sahakarnagar,Taroda Budruk Road',
           zip: '431605',
           city: ' Nanded, Maharashtra ',
           country: 'India',
@@ -112,7 +111,7 @@ export const Edit = () => {
         },
         images: {
           // The logo on top of your invoice
-          logo: 'https://cdn.discordapp.com/attachments/899330951572762724/1095352047018197173/j.png',
+          logo: 'https://cdn.discordapp.com/attachments/1068777659779268660/1068777940223004734/logo-no-background.png',
           // The invoice background
         },
       });
