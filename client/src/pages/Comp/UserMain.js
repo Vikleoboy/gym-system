@@ -44,6 +44,7 @@ export const UserMain = (props) => {
     name: null,
     gender: 'male',
     Dob: date,
+    edu: null,
     profile_pic: null,
     ph_Number: null,
     ph_NumberTwo: null,

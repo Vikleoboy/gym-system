@@ -15,12 +15,14 @@ class User {
     "profile_pic",
     "Address",
     "payment_method",
+    "edu",
     "ph_NumberTwo",
   ];
   Usertemp() {
     let user = {
       id: uniqid(),
       name: null,
+      edu: null,
       gender: null,
       Dob: null,
       profile_pic: null,
