@@ -56,7 +56,7 @@ export const UserMain = (props) => {
   });
 
   const [DelOpen, setDelOpen] = useState(false);
-  
+
   const handleDelShift = () => {
     setDelOpen((e) => !e);
   };
@@ -237,9 +237,7 @@ export const UserMain = (props) => {
       >
         <DialogTitle id="alert-dialog-title">{'Remove User'}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Do you want to delete this User ?
-          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">Do you want to delete this User ?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDelShift}>Disagree</Button>
@@ -302,6 +300,16 @@ export const UserMain = (props) => {
                   label="Name"
                   variant="outlined"
                   className="  max-w-[2000px] w-[60%]"
+                />
+
+                <TextField
+                  value={User.edu}
+                  required
+                  onChange={handleEdu}
+                  id="filled-basic"
+                  label="Education"
+                  variant="outlined"
+                  className="  max-w-[2000p x] w-[60%]  "
                 />
 
                 <FormControl className="">
